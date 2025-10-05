@@ -193,9 +193,9 @@ export function SharedHeader({ variant = 'welcome', showNavigation = true }: Sha
                             </>
                         ) : (
                             <>
-                                <Link href={login()} className="font-medium text-slate-600 transition-colors hover:text-emerald-600">
+                                {/* <Link href={login()} className="font-medium text-slate-600 transition-colors hover:text-emerald-600">
                                     Patient Login
-                                </Link>
+                                </Link> */}
                                 {variant !== 'booking' && (
                                     <Link
                                         href="/appointments/book"

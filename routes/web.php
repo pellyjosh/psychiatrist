@@ -11,6 +11,14 @@ use App\Http\Controllers\User\AppointmentController as UserAppointmentController
 
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index'])->name('home');
 
+// Admin login routes
+Route::get('/admin', function () {
+    return redirect()->route('admin.login');
+});
+Route::get('/admin/login', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('admin.login');
+
 // Public pages
 Route::get('/appointments/book', [AppointmentController::class, 'book'])->name('appointments.book');
 Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
