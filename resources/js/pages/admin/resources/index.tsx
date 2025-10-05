@@ -115,7 +115,7 @@ export default function AdminResourcesIndex({ resources, filters, stats, categor
 
     return (
         <AdminLayout>
-            <Head title="Manage Resources" />
+            <Head title="Manage Resources - Admin | Omolola Akinola Psychiatry PLLC" />
 
             <div className="space-y-6">
                 {/* Header */}

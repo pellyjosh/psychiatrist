@@ -29,7 +29,7 @@ export default function AdminResourcesCreate() {
 
     return (
         <AdminLayout>
-            <Head title="Create Resource" />
+            <Head title="Create Resource - Admin | Omolola Akinola Psychiatry PLLC" />
 
             <div className="space-y-6">
                 {/* Header */}

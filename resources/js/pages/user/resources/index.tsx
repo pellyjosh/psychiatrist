@@ -90,7 +90,7 @@ export default function UserResourcesIndex({ resources, filters, categories }: P
 
     return (
         <UserLayout>
-            <Head title="Resources" />
+            <Head title="My Resources - Omolola Akinola Psychiatry PLLC" />
 
             <div className="space-y-6">
                 {/* Header */}

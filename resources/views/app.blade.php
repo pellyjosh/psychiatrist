@@ -30,7 +30,40 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}</title>
+        
+        <!-- Primary Meta Tags -->
+        <meta name="title" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
+        <meta name="description" content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available.">
+        <meta name="keywords" content="psychiatrist, mental health, ADHD, anxiety, depression, PTSD, telehealth, psychiatric nurse practitioner, Dr. Akinola">
+        <meta name="author" content="Dr. Omolola Akinola">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ config('app.url') }}">
+        <meta property="og:title" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
+        <meta property="og:description" content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.">
+        <meta property="og:image" content="{{ asset('logo.png') }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:site_name" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
+        
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="{{ config('app.url') }}">
+        <meta property="twitter:title" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
+        <meta property="twitter:description" content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.">
+        <meta property="twitter:image" content="{{ asset('logo.png') }}">
+        
+        <!-- Additional Meta Tags -->
+        <meta name="robots" content="index, follow">
+        <meta name="googlebot" content="index, follow">
+        <meta name="theme-color" content="#00b578">
+        <meta name="msapplication-TileColor" content="#00b578">
+        <meta name="application-name" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
+        
+        <!-- Canonical URL -->
+        <link rel="canonical" href="{{ config('app.url') }}">
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">

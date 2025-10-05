@@ -61,7 +61,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     return (
         <AuthLayout title="Welcome Back" description="Enter your credentials to access your account and manage your appointments">
-            <Head title="Log in" />
+            <Head title="Log in - Omolola Akinola Psychiatry PLLC" />
             {status && (
                 <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700" role="status">
                     {status}

@@ -153,7 +153,7 @@ export default function Resources() {
 
     return (
         <>
-            <Head title="Patient Resources - Psychiatry PLLC">
+            <Head title="Patient Resources - Omolola Akinola Psychiatry PLLC">
                 <meta
                     name="description"
                     content="Educational materials, self-help resources, and support information for mental health and psychiatric care."

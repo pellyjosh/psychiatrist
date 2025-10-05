@@ -46,13 +46,26 @@ export default function PsychiatryWelcome() {
 
     return (
         <>
-            <Head title="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner">
+            <Head title="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner | Omolola Akinola Psychiatry PLLC">
                 <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
                 <meta
                     name="description"
-                    content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available."
+                    content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available nationwide."
                 />
+                <meta
+                    name="keywords"
+                    content="Dr. Lola Akinola, psychiatrist, psychiatric nurse practitioner, PMHNP-BC, mental health, ADHD treatment, anxiety therapy, depression treatment, PTSD care, telehealth psychiatry, medication management, psychiatric evaluation"
+                />
+                <meta name="author" content="Dr. Omolola Akinola" />
+                <meta property="og:title" content="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner" />
+                <meta property="og:description" content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available." />
+                <meta property="og:image" content="/logo.png" />
+                <meta property="og:type" content="website" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner" />
+                <meta name="twitter:description" content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management." />
+                <meta name="twitter:image" content="/logo.png" />
                 <style>
                     {`
                         html {

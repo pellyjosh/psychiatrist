@@ -991,7 +991,7 @@ export default function AppointmentBooking() {
 
     return (
         <>
-            <Head title="Book Appointment - Psychiatry PLLC" />
+            <Head title="Book Appointment - Omolola Akinola Psychiatry PLLC" />
 
             {/* Saved Draft Modal */}
             {showDraftModal && (

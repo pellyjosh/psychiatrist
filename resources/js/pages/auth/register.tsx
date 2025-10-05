@@ -57,7 +57,7 @@ export default function Register() {
 
     return (
         <AuthLayout title="Create Your Account" description="Join our practice to book appointments and manage your mental health journey">
-            <Head title="Register" />
+            <Head title="Register - Omolola Akinola Psychiatry PLLC" />
             <Form {...inertiaForm} resetOnSuccess={['password', 'password_confirmation']} disableWhileProcessing className="flex flex-col gap-6">
                 {({ processing, errors }) => (
                     <>

@@ -11,7 +11,7 @@ import { initializeTheme } from './hooks/use-appearance';
 
 const queryClient = new QueryClient();
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Omolola Akinola, DNP, PMHNP-BC';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
