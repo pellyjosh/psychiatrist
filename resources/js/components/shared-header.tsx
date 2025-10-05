@@ -1,5 +1,5 @@
 import AppLogo from '@/components/app-logo';
-import { dashboard, login } from '@/routes';
+import { dashboard } from '@/routes';
 import { dashboard as adminDashboard } from '@/routes/admin';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
