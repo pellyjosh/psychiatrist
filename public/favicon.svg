@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="favTitle" width="128" height="128">
+	<title id="favTitle">Psychiatry PLLC Favicon</title>
+	<defs>
+		<linearGradient id="fa" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0%" stop-color="#00B294"/>
+			<stop offset="100%" stop-color="#009B7A"/>
+		</linearGradient>
+		<linearGradient id="fb" x1="1" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#008E72"/>
+			<stop offset="100%" stop-color="#00795F"/>
+		</linearGradient>
+		<linearGradient id="fc" x1="0" y1="1" x2="1" y2="0">
+			<stop offset="0%" stop-color="#00AC8A"/>
+			<stop offset="100%" stop-color="#009278"/>
+		</linearGradient>
+		<linearGradient id="fd" x1="1" y1="1" x2="0" y2="0">
+			<stop offset="0%" stop-color="#009E80"/>
+			<stop offset="100%" stop-color="#00886D"/>
+		</linearGradient>
+	</defs>
+	<path d="M64 8c28.7 0 52 23.3 52 52 0 11.1-3.4 21.4-9.5 29.8-1.1 1.6-3 2.5-4.9 2-30.1-6.7-44.6-6.7-74.7 0-1.9.4-3.8-.4-4.9-2C15.4 81.4 12 71.1 12 60 12 31.3 35.3 8 64 8Z" fill="url(#fa)"/>
+	<path d="M116 64c0 28.7-23.3 52-52 52-11.1 0-21.4-3.4-29.8-9.5-1.6-1.1-2.5-3-2-4.9 6.7-30.1 6.7-44.6 0-74.7-.4-1.9.4-3.8 2-4.9C42.6 19.4 52.9 16 64 16c28.7 0 52 23.3 52 52Z" fill="url(#fb)"/>
+	<path d="M64 120c-28.7 0-52-23.3-52-52 0-11.1 3.4-21.4 9.5-29.8 1.1-1.6 3-2.5 4.9-2 30.1 6.7 44.6 6.7 74.7 0 1.9-.4 3.8.4 4.9 2 6.1 8.4 9.5 18.7 9.5 29.8 0 28.7-23.3 52-52 52Z" fill="url(#fc)"/>
+	<path d="M8 64c0-28.7 23.3-52 52-52 11.1 0 21.4 3.4 29.8 9.5 1.6 1.1 2.5 3 2 4.9-6.7 30.1-6.7 44.6 0 74.7.4 1.9-.4 3.8-2 4.9C81.4 106.6 71.1 110 60 110c-28.7 0-52-23.3-52-52Z" fill="url(#fd)"/>
+	<rect x="55" y="55" width="18" height="18" fill="#012A21" rx="1"/>
+</svg>
