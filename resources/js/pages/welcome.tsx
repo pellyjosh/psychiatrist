@@ -59,12 +59,18 @@ export default function PsychiatryWelcome() {
                 />
                 <meta name="author" content="Dr. Omolola Akinola" />
                 <meta property="og:title" content="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner" />
-                <meta property="og:description" content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available." />
+                <meta
+                    property="og:description"
+                    content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available."
+                />
                 <meta property="og:image" content="/logo.png" />
                 <meta property="og:type" content="website" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner" />
-                <meta name="twitter:description" content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management." />
+                <meta
+                    name="twitter:description"
+                    content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management."
+                />
                 <meta name="twitter:image" content="/logo.png" />
                 <style>
                     {`
