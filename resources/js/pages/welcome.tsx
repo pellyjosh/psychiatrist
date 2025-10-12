@@ -764,7 +764,10 @@ export default function PsychiatryWelcome() {
                                 <h4 className="mb-4 font-semibold">Emergency Resources</h4>
                                 <p className="mb-2 text-sm text-emerald-100">If you are experiencing a mental health emergency:</p>
                                 <p className="font-medium text-emerald-400">911</p>
-                                <p className="font-medium text-emerald-400">988 (Suicide & Crisis Lifeline)</p>
+                                <p className="font-medium text-emerald-400">
+                                    ** Additional crisis support within the US: call National Suicide Prevention Lifeline (1-800-273-8255); text Home
+                                    to 741741; go to the closest emergency room; or call 911.
+                                </p>
                                 <p className="mt-2 text-sm text-emerald-100">
                                     For non-emergency support:
                                     <br />
