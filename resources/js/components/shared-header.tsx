@@ -196,7 +196,14 @@ export function SharedHeader({ variant = 'welcome', showNavigation = true }: Sha
                                 {/* <Link href={login()} className="font-medium text-slate-600 transition-colors hover:text-emerald-600">
                                     Patient Login
                                 </Link> */}
-                                {variant !== 'booking' && (
+                                {variant === 'booking' ? (
+                                    <Link
+                                        href="/"
+                                        className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white transition-all duration-300 hover:scale-105 hover:bg-emerald-700"
+                                    >
+                                        Home
+                                    </Link>
+                                ) : (
                                     <Link
                                         href="/appointments/book"
                                         className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white transition-all duration-300 hover:scale-105 hover:bg-emerald-700"

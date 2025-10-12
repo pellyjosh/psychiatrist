@@ -320,7 +320,7 @@ export default function Resources() {
                                 <Phone className="mx-auto mb-4 h-12 w-12 text-green-600" />
                                 <h3 className="mb-2 text-lg font-semibold text-slate-800">Call Our Office</h3>
                                 <p className="mb-4 text-slate-600">Speak with our team about your questions or concerns.</p>
-                                <p className="font-semibold text-green-600">(555) 123-4567</p>
+                                <p className="font-semibold text-green-600">(347) 450-3015</p>
                             </div>
 
                             <div className="rounded-lg bg-slate-50 p-6 text-center">

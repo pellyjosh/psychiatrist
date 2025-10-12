@@ -1,6 +1,6 @@
 import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, CheckCircle, Clock, Search, User, Users } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Eye, Search, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface Patient {
@@ -198,7 +198,7 @@ export default function AdminPatientsIndex({ patients, filters }: Props) {
                                         <th className="px-6 py-3 text-center font-semibold text-slate-900">Confirmed</th>
                                         <th className="px-6 py-3 text-center font-semibold text-slate-900">Completed</th>
                                         <th className="px-6 py-3 text-left font-semibold text-slate-900">Joined</th>
-                                        <th className="px-6 py-3 text-right font-semibold text-slate-900">Actions</th>
+                                        <th className="px-6 py-3 text-center font-semibold text-slate-900">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-200">
@@ -241,13 +241,16 @@ export default function AdminPatientsIndex({ patients, filters }: Props) {
                                                 <div className="text-lg font-semibold text-blue-600">{patient.completed_appointments_count}</div>
                                             </td>
                                             <td className="px-6 py-4 text-slate-600">{new Date(patient.created_at).toLocaleDateString()}</td>
-                                            <td className="px-6 py-4 text-right">
-                                                <Link
-                                                    href={`/admin/patients/${patient.id}`}
-                                                    className="text-custom-green hover:text-custom-green-dark text-sm font-medium transition-colors"
-                                                >
-                                                    View Details
-                                                </Link>
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="flex items-center justify-center">
+                                                    <Link
+                                                        href={`/admin/patients/${patient.id}`}
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-colors hover:bg-blue-100 hover:text-blue-700"
+                                                        title="View patient details"
+                                                    >
+                                                        <Eye size={16} />
+                                                    </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

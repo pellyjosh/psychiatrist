@@ -45,7 +45,7 @@ class ResourceSeeder extends Seeder
                 'description' => 'Important phone numbers and resources for mental health emergencies.',
                 'type' => 'emergency',
                 'category' => 'Emergency',
-                'content' => 'CRISIS HOTLINES:\n\n24/7 Crisis Support:\n• National Suicide Prevention Lifeline: 988\n• Crisis Text Line: Text HOME to 741741\n• National Domestic Violence Hotline: 1-800-799-7233\n\nLocal Emergency:\n• Emergency Services: 911\n• Local Crisis Center: (347) 472-1758\n\nOnline Support:\n• Crisis Chat: suicidepreventionlifeline.org\n• Veterans Crisis Line: 1-800-273-8255',
+                'content' => 'CRISIS HOTLINES:\n\n24/7 Crisis Support:\n• National Suicide Prevention Lifeline: 988\n• Crisis Text Line: Text HOME to 741741\n• National Domestic Violence Hotline: 1-800-799-7233\n\nLocal Emergency:\n• Emergency Services: 911\n• Local Crisis Center: (347) 450-3015\n\nOnline Support:\n• Crisis Chat: suicidepreventionlifeline.org\n• Veterans Crisis Line: 1-800-273-8255',
                 'tags' => ['crisis', 'emergency', 'helpline', 'support'],
                 'is_published' => true,
                 'created_by' => $admin->id,

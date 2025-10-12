@@ -17,7 +17,16 @@ class AppointmentController extends Controller
 
     public function book()
     {
-        return Inertia::render('appointment-booking');
+        // Get services available for user booking (only follow-up and initial-evaluation)
+        $services = \App\Models\Service::availableForBooking()->active()->ordered()->get(['id', 'code', 'name', 'duration', 'description']);
+        
+        // Get all appointment types for user selection
+        $appointmentTypes = \App\Models\AppointmentType::active()->ordered()->get(['id', 'code', 'name']);
+
+        return Inertia::render('appointment-booking', [
+            'services' => $services,
+            'appointmentTypes' => $appointmentTypes,
+        ]);
     }
 
     public function store(Request $request)
@@ -58,7 +67,7 @@ class AppointmentController extends Controller
             'subscriberRelationship' => 'nullable|string|max:100',
             
             // Service Selection
-            'service' => 'required|string',
+            'service' => 'required|in:initial-evaluation,follow-up',
             'appointmentType' => 'nullable|string|max:50',
             'preferredDate' => 'required|date|after_or_equal:today',
             'preferredTime' => 'required|string',

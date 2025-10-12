@@ -107,7 +107,26 @@ interface AppointmentData {
     financialResponsibility: boolean;
 }
 
-export default function AppointmentBooking() {
+interface Service {
+    id: number;
+    code: string;
+    name: string;
+    duration: number;
+    description?: string;
+}
+
+interface AppointmentType {
+    id: number;
+    code: string;
+    name: string;
+}
+
+interface AppointmentBookingProps {
+    services: Service[];
+    appointmentTypes: AppointmentType[];
+}
+
+export default function AppointmentBooking({ services = [], appointmentTypes = [] }: AppointmentBookingProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
@@ -166,7 +185,7 @@ export default function AppointmentBooking() {
         subscriberRelationship: '',
 
         // Service Selection
-        service: '',
+        service: 'initial-evaluation',
         appointmentType: 'telehealth',
         preferredDate: '',
         preferredTime: '',
@@ -217,49 +236,18 @@ export default function AppointmentBooking() {
     });
 
     const { data, setData, post, processing, errors } = useForm<AppointmentData>(loadSavedData());
-    const services = [
-        {
-            id: 'initial-evaluation',
-            name: 'Initial Psychiatric Evaluation',
-            duration: '90 minutes',
-            price: '$275',
-            description:
-                'Comprehensive psychiatric evaluation and assessment to understand your unique situation and develop a personalized treatment plan',
-            category: 'evaluation',
-        },
-        {
-            id: 'medication-management',
-            name: 'Medication Management',
-            duration: '30-45 minutes',
-            price: '$175',
-            description: 'Ongoing medication monitoring, adjustment, and management for optimal treatment outcomes',
-            category: 'follow-up',
-        },
-        {
-            id: 'adhd-treatment',
-            name: 'ADHD Consultation',
-            duration: '45 minutes',
-            price: '$175',
-            description: 'Specialized evaluation and treatment for Attention Deficit Hyperactivity Disorder',
-            category: 'specialty',
-        },
-        {
-            id: 'anxiety-depression',
-            name: 'Anxiety & Depression Treatment',
-            duration: '45 minutes',
-            price: '$175',
-            description: 'Comprehensive treatment for anxiety disorders, depression, and mood-related conditions',
-            category: 'specialty',
-        },
-        {
-            id: 'therapy-session',
-            name: 'Individual Therapy Session',
-            duration: '50 minutes',
-            price: '$150',
-            description: 'Individual psychotherapy session focused on personal growth and mental wellness',
-            category: 'therapy',
-        },
-    ];
+
+    // Convert database services to the format expected by the UI
+    const formattedServices = services.map((service) => ({
+        id: service.code,
+        name: service.name,
+        duration: `${service.duration} minutes`,
+        description: service.description || '',
+        category: service.code.includes('evaluation') ? 'evaluation' : 'follow-up',
+    }));
+
+    // All services for admin use (can be expanded when needed)
+    const allServices = formattedServices;
     const insuranceProviders = [
         'Aetna',
         'Anthem',
@@ -1091,7 +1079,7 @@ export default function AppointmentBooking() {
             )}
 
             <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-blue-50">
-                <SharedHeader />
+                <SharedHeader variant="booking" showNavigation={false} />
 
                 {/* Auto-save Status Indicator */}
                 {autoSaveStatus && (
@@ -1211,7 +1199,7 @@ export default function AppointmentBooking() {
                                     </div>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    {services.map((service) => (
+                                    {formattedServices.map((service) => (
                                         <div
                                             key={service.id}
                                             className={`cursor-pointer rounded-lg border-2 p-4 transition-all duration-200 hover:shadow-lg ${
@@ -1237,11 +1225,6 @@ export default function AppointmentBooking() {
                                                         >
                                                             <Clock className="mr-1 h-4 w-4" />
                                                             {service.duration}
-                                                        </span>
-                                                        <span
-                                                            className={`text-sm font-bold ${data.service === service.id ? 'text-green-800' : 'text-green-700'}`}
-                                                        >
-                                                            {service.price}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1758,7 +1741,7 @@ export default function AppointmentBooking() {
                                             <div className="flex justify-between">
                                                 <span className="font-medium text-gray-800">Service:</span>
                                                 <span className="text-gray-900">
-                                                    {services.find((s) => s.id === data.service)?.name || 'Not selected'}
+                                                    {formattedServices.find((s) => s.id === data.service)?.name || 'Not selected'}
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
@@ -1771,12 +1754,8 @@ export default function AppointmentBooking() {
                                             </div>
                                             <div className="flex justify-between">
                                                 <span className="font-medium text-gray-800">Duration:</span>
-                                                <span className="text-gray-900">60 minutes</span>
-                                            </div>
-                                            <div className="mt-3 flex justify-between border-t border-gray-200 pt-3">
-                                                <span className="font-semibold text-gray-900">Fee:</span>
-                                                <span className="text-lg font-bold text-teal-700">
-                                                    {services.find((s) => s.id === data.service)?.price || '$0'}
+                                                <span className="text-gray-900">
+                                                    {formattedServices.find((s) => s.id === data.service)?.duration || 'Not specified'}
                                                 </span>
                                             </div>
                                         </div>
@@ -1798,6 +1777,33 @@ export default function AppointmentBooking() {
                                             <div>
                                                 <span className="font-medium text-gray-800">Phone:</span>{' '}
                                                 <span className="text-gray-900">{data.phone}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Billing Disclaimer */}
+                                    <div className="rounded-lg border-2 border-blue-200 bg-blue-50/50 p-6">
+                                        <div className="flex items-start space-x-3">
+                                            <div className="flex-shrink-0">
+                                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600">
+                                                    <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-blue-900">Important Billing Information</h4>
+                                                <p className="mt-2 text-sm leading-relaxed text-blue-800">
+                                                    <strong>Billing is processed through Headway.</strong> All payment processing, insurance claims,
+                                                    and billing inquiries will be handled by Headway on behalf of Dr. Lola Akinola's practice. You
+                                                    will receive billing statements and communications directly from Headway for your mental health
+                                                    services.
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

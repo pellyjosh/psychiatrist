@@ -47,8 +47,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin area
     Route::middleware('admin')->group(function () {
         Route::get('admin/dashboard', AdminDashboardController::class)->name('admin.dashboard');
-        Route::resource('admin/appointments', AdminAppointmentController::class)->except(['create', 'store'])->names([
+        Route::resource('admin/appointments', AdminAppointmentController::class)->names([
             'index' => 'admin.appointments.index',
+            'create' => 'admin.appointments.create',
+            'store' => 'admin.appointments.store',
             'show' => 'admin.appointments.show',
             'update' => 'admin.appointments.update',
             'destroy' => 'admin.appointments.destroy',

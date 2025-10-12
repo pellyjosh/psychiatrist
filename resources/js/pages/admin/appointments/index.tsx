@@ -1,6 +1,7 @@
+import { FormInput, FormSelect, FormTextarea } from '@/components/ui/form-inputs';
 import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, CalendarDays, CheckCircle, Clock, Filter, Search, User, XCircle } from 'lucide-react';
+import { Calendar, CalendarDays, CheckCircle, Clock, Edit, Eye, Filter, Plus, Search, User, X, XCircle } from 'lucide-react';
 import { useState } from 'react';
 
 interface UserType {
@@ -18,6 +19,26 @@ interface Appointment {
     notes?: string;
     created_at: string;
     user: UserType;
+    service?: string;
+    appointment_type?: string;
+    alternate_date?: string;
+    alternate_time?: string;
+    current_symptoms?: string;
+    current_medications?: string;
+    allergies?: string;
+}
+
+interface Service {
+    id: number;
+    code: string;
+    name: string;
+    duration: number;
+}
+
+interface AppointmentType {
+    id: number;
+    code: string;
+    name: string;
 }
 
 interface Props {
@@ -38,11 +59,35 @@ interface Props {
         completed: number;
         cancelled: number;
     };
+    services: Service[];
+    appointmentTypes: AppointmentType[];
 }
 
-export default function AdminAppointmentsIndex({ appointments, filters, stats }: Props) {
+export default function AdminAppointmentsIndex({ appointments, filters, stats, services, appointmentTypes }: Props) {
     const [showFilters, setShowFilters] = useState(false);
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
+    const [showDeclineModal, setShowDeclineModal] = useState(false);
+    const [appointmentToDecline, setAppointmentToDecline] = useState<number | null>(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [appointmentToEdit, setAppointmentToEdit] = useState<Appointment | null>(null);
+    const [editFormData, setEditFormData] = useState({
+        // Date & Time
+        preferred_date: '',
+        preferred_time: '',
+
+        // Service Details
+        service: '',
+        appointment_type: 'telehealth' as 'telehealth' | 'in-person',
+
+        // Medical Information
+        reason: '',
+        currentSymptoms: '',
+        currentMedications: '',
+        allergies: '',
+
+        // Admin fields
+        admin_notes: '',
+    });
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,15 +127,99 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
     };
 
     const handleDecline = (appointmentId: number) => {
-        if (confirm('Are you sure you want to decline this appointment?')) {
+        setAppointmentToDecline(appointmentId);
+        setShowDeclineModal(true);
+    };
+
+    const confirmDecline = () => {
+        if (appointmentToDecline) {
             router.post(
-                `/admin/appointments/${appointmentId}/decline`,
+                `/admin/appointments/${appointmentToDecline}/decline`,
                 {},
                 {
                     preserveState: true,
                 },
             );
         }
+        setShowDeclineModal(false);
+        setAppointmentToDecline(null);
+    };
+
+    const cancelDecline = () => {
+        setShowDeclineModal(false);
+        setAppointmentToDecline(null);
+    };
+
+    const handleEdit = (appointment: Appointment) => {
+        console.log('Editing appointment:', appointment);
+        setAppointmentToEdit(appointment);
+
+        // Format date properly for date input (YYYY-MM-DD)
+        const formatDateForInput = (dateString: string) => {
+            if (!dateString) return '';
+            try {
+                // Handle ISO date strings (e.g., "2025-10-16T00:00:00.000000Z")
+                let dateStr = dateString;
+                if (dateStr.includes('T')) {
+                    dateStr = dateStr.split('T')[0];
+                }
+                // Validate the date
+                const date = new Date(dateStr + 'T00:00:00');
+                if (isNaN(date.getTime())) return '';
+                return dateStr; // Return YYYY-MM-DD format
+            } catch {
+                return '';
+            }
+        };
+
+        const formData = {
+            preferred_date: formatDateForInput(appointment.appointment_date),
+            preferred_time: appointment.appointment_time || '',
+            service: appointment.service || '',
+            appointment_type: (appointment.appointment_type as 'telehealth' | 'in-person') || 'telehealth',
+            reason: appointment.reason || '',
+            currentSymptoms: appointment.current_symptoms || '',
+            currentMedications: appointment.current_medications || '',
+            allergies: appointment.allergies || '',
+            admin_notes: appointment.notes || '',
+        };
+
+        console.log('Setting form data:', formData);
+        setEditFormData(formData);
+        setShowEditModal(true);
+    };
+
+    const handleSaveEdit = () => {
+        if (appointmentToEdit) {
+            console.log('Saving appointment with data:', editFormData);
+            router.put(`/admin/appointments/${appointmentToEdit.id}`, editFormData, {
+                preserveState: true,
+                onSuccess: () => {
+                    console.log('Appointment updated successfully');
+                    setShowEditModal(false);
+                    setAppointmentToEdit(null);
+                },
+                onError: (errors) => {
+                    console.error('Edit appointment errors:', errors);
+                },
+            });
+        }
+    };
+
+    const cancelEdit = () => {
+        setAppointmentToEdit(null);
+        setEditFormData({
+            preferred_date: '',
+            preferred_time: '',
+            service: '',
+            appointment_type: 'telehealth',
+            reason: '',
+            currentSymptoms: '',
+            currentMedications: '',
+            allergies: '',
+            admin_notes: '',
+        });
+        setShowEditModal(false);
     };
 
     const getStatusColor = (status: string) => {
@@ -134,6 +263,13 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
                         <h1 className="text-2xl font-bold text-slate-800">Manage Appointments</h1>
                         <p className="mt-1 text-slate-600">Review and manage all patient appointments</p>
                     </div>
+                    <Link
+                        href="/admin/appointments/create"
+                        className="inline-flex items-center rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700"
+                    >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Appointment
+                    </Link>
                 </div>
 
                 {/* Stats Cards */}
@@ -222,26 +358,24 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
                         <div className="border-b border-slate-200 bg-slate-50 p-4">
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Status</label>
-                                    <select
+                                    <FormSelect
+                                        label="Status"
                                         value={filters?.status || ''}
                                         onChange={(e) => handleFilter({ ...filters, search: searchQuery, status: e.target.value || undefined })}
-                                        className="focus:ring-custom-green focus:border-custom-green w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2"
                                     >
                                         <option value="">All Statuses</option>
                                         <option value="pending">Pending</option>
                                         <option value="confirmed">Confirmed</option>
                                         <option value="completed">Completed</option>
                                         <option value="cancelled">Cancelled</option>
-                                    </select>
+                                    </FormSelect>
                                 </div>
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-slate-700">Date</label>
-                                    <input
+                                    <FormInput
                                         type="date"
+                                        label="Date"
                                         value={filters?.date || ''}
                                         onChange={(e) => handleFilter({ ...filters, search: searchQuery, date: e.target.value || undefined })}
-                                        className="focus:ring-custom-green focus:border-custom-green w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2"
                                     />
                                 </div>
                                 <div className="flex items-end">
@@ -275,7 +409,7 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
                                         <th className="px-6 py-3 text-left font-semibold text-slate-900">Reason</th>
                                         <th className="px-6 py-3 text-center font-semibold text-slate-900">Status</th>
                                         <th className="px-6 py-3 text-left font-semibold text-slate-900">Scheduled</th>
-                                        <th className="px-6 py-3 text-right font-semibold text-slate-900">Actions</th>
+                                        <th className="px-6 py-3 text-center font-semibold text-slate-900">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-200">
@@ -295,22 +429,31 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
                                             <td className="px-6 py-4">
                                                 <div>
                                                     <div className="font-medium text-slate-900">
-                                                        {new Date(appointment.appointment_date).toLocaleDateString('en-US', {
-                                                            weekday: 'short',
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                            year: 'numeric',
-                                                        })}
+                                                        {(() => {
+                                                            try {
+                                                                // Handle date string that might be in ISO format
+                                                                let dateStr = appointment.appointment_date;
+                                                                if (dateStr && dateStr.includes('T')) {
+                                                                    dateStr = dateStr.split('T')[0];
+                                                                }
+                                                                const date = new Date(dateStr + 'T00:00:00');
+                                                                if (isNaN(date.getTime())) {
+                                                                    return 'Invalid Date';
+                                                                }
+                                                                return date.toLocaleDateString('en-US', {
+                                                                    weekday: 'short',
+                                                                    month: 'short',
+                                                                    day: 'numeric',
+                                                                    year: 'numeric',
+                                                                });
+                                                            } catch (error) {
+                                                                return 'Invalid Date';
+                                                            }
+                                                        })()}
                                                     </div>
                                                     <div className="flex items-center gap-1 text-sm text-slate-600">
                                                         <Clock className="h-3 w-3" />
-                                                        {new Date(
-                                                            `${appointment.appointment_date} ${appointment.appointment_time}`,
-                                                        ).toLocaleTimeString('en-US', {
-                                                            hour: 'numeric',
-                                                            minute: '2-digit',
-                                                            hour12: true,
-                                                        })}
+                                                        {appointment.appointment_time || 'Time not set'}
                                                     </div>
                                                 </div>
                                             </td>
@@ -333,31 +476,57 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="text-sm text-slate-600">{new Date(appointment.created_at).toLocaleDateString()}</div>
+                                                <div className="text-sm text-slate-600">
+                                                    {(() => {
+                                                        try {
+                                                            const date = new Date(appointment.created_at);
+                                                            if (isNaN(date.getTime())) {
+                                                                return 'Invalid Date';
+                                                            }
+                                                            return date.toLocaleDateString('en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                                year: 'numeric',
+                                                            });
+                                                        } catch (error) {
+                                                            return 'Invalid Date';
+                                                        }
+                                                    })()}
+                                                </div>
                                             </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="flex items-center justify-center gap-1">
                                                     {appointment.status === 'pending' && (
                                                         <>
                                                             <button
                                                                 onClick={() => handleApprove(appointment.id)}
-                                                                className="text-custom-green hover:text-custom-green-dark text-sm font-medium transition-colors"
+                                                                className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-50 text-green-600 transition-colors hover:bg-green-100 hover:text-green-700"
+                                                                title="Accept appointment"
                                                             >
-                                                                Approve
+                                                                <CheckCircle size={16} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDecline(appointment.id)}
-                                                                className="text-sm font-medium text-red-600 transition-colors hover:text-red-800"
+                                                                className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700"
+                                                                title="Decline appointment"
                                                             >
-                                                                Decline
+                                                                <X size={16} />
                                                             </button>
                                                         </>
                                                     )}
+                                                    <button
+                                                        onClick={() => handleEdit(appointment)}
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-yellow-50 text-yellow-600 transition-colors hover:bg-yellow-100 hover:text-yellow-700"
+                                                        title="Edit appointment"
+                                                    >
+                                                        <Edit size={16} />
+                                                    </button>
                                                     <Link
                                                         href={`/admin/patients/${appointment.user.id}`}
-                                                        className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-800"
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-colors hover:bg-blue-100 hover:text-blue-700"
+                                                        title="View patient details"
                                                     >
-                                                        View Patient
+                                                        <Eye size={16} />
                                                     </Link>
                                                 </div>
                                             </td>
@@ -385,6 +554,265 @@ export default function AdminAppointmentsIndex({ appointments, filters, stats }:
                     </div>
                 )}
             </div>
+
+            {/* Decline Confirmation Modal */}
+            {showDeclineModal && (
+                <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+                    <div className="relative mx-4 w-full max-w-md rounded-lg bg-white shadow-xl">
+                        <div className="p-6">
+                            <div className="mb-4 flex items-center justify-center">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+                                    <XCircle className="h-6 w-6 text-red-600" />
+                                </div>
+                            </div>
+                            <div className="text-center">
+                                <h3 className="mb-2 text-lg font-medium text-gray-900">Decline Appointment</h3>
+                                <p className="text-sm text-gray-600">
+                                    Are you sure you want to decline this appointment? This action cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-3 bg-gray-50 px-6 py-4">
+                            <button
+                                type="button"
+                                onClick={cancelDecline}
+                                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDecline}
+                                className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+                            >
+                                Decline Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit/Reschedule Appointment Modal */}
+            {showEditModal && appointmentToEdit && (
+                <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+                    <div className="relative flex max-h-[90vh] w-full max-w-5xl flex-col rounded-xl bg-white shadow-2xl">
+                        {/* Modal Header - Fixed */}
+                        <div className="flex items-center justify-between border-b border-gray-200 p-6">
+                            <div>
+                                <h3 className="text-xl font-semibold text-gray-900">Edit Appointment</h3>
+                                <p className="mt-1 text-sm text-gray-600">Patient: {appointmentToEdit.user.name}</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={cancelEdit}
+                                className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        {/* Modal Body - Scrollable */}
+                        <div className="flex-1 overflow-y-auto p-6">
+                            <div className="space-y-8">
+                                {/* Patient Information Section */}
+                                <div className="rounded-lg bg-gray-50 p-4">
+                                    <h4 className="mb-3 flex items-center text-sm font-semibold text-gray-700">
+                                        <User className="mr-2 h-4 w-4" />
+                                        Patient Information
+                                    </h4>
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        <div>
+                                            <label className="mb-1 block text-sm font-medium text-gray-700">Patient Name</label>
+                                            <div className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 font-medium text-gray-600">
+                                                {appointmentToEdit.user.name}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="mb-1 block text-sm font-medium text-gray-700">Email Address</label>
+                                            <div className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-600">
+                                                {appointmentToEdit.user.email}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Appointment Details Section */}
+                                <div>
+                                    <h4 className="mb-4 flex items-center text-sm font-semibold text-gray-700">
+                                        <Calendar className="mr-2 h-4 w-4" />
+                                        Appointment Details
+                                    </h4>
+                                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                        <div>
+                                            <FormInput
+                                                type="date"
+                                                label="Appointment Date *"
+                                                value={editFormData.preferred_date}
+                                                onChange={(e) => setEditFormData({ ...editFormData, preferred_date: e.target.value })}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <FormInput
+                                                type="time"
+                                                label="Appointment Time *"
+                                                value={editFormData.preferred_time}
+                                                onChange={(e) => setEditFormData({ ...editFormData, preferred_time: e.target.value })}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <FormSelect
+                                                label="Service Type *"
+                                                value={editFormData.service}
+                                                onChange={(e) => setEditFormData({ ...editFormData, service: e.target.value })}
+                                                required
+                                            >
+                                                <option value="">Select a service</option>
+                                                {services.map((service) => (
+                                                    <option key={service.id} value={service.code}>
+                                                        {service.name}
+                                                    </option>
+                                                ))}
+                                            </FormSelect>
+                                        </div>
+
+                                        <div>
+                                            <FormSelect
+                                                label="Appointment Type *"
+                                                value={editFormData.appointment_type}
+                                                onChange={(e) =>
+                                                    setEditFormData({
+                                                        ...editFormData,
+                                                        appointment_type: e.target.value as 'telehealth' | 'in-person',
+                                                    })
+                                                }
+                                                required
+                                            >
+                                                {appointmentTypes.map((type) => (
+                                                    <option key={type.id} value={type.code}>
+                                                        {type.name}
+                                                    </option>
+                                                ))}
+                                            </FormSelect>
+                                        </div>
+
+                                        <div>
+                                            <label className="mb-2 block text-sm font-medium text-gray-700">Created At</label>
+                                            <div className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-gray-600">
+                                                {appointmentToEdit &&
+                                                    (() => {
+                                                        try {
+                                                            const date = new Date(appointmentToEdit.created_at);
+                                                            if (isNaN(date.getTime())) {
+                                                                return 'Invalid Date';
+                                                            }
+                                                            return date.toLocaleString('en-US', {
+                                                                weekday: 'short',
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                                year: 'numeric',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit',
+                                                                timeZoneName: 'short',
+                                                            });
+                                                        } catch (error) {
+                                                            return 'Invalid Date';
+                                                        }
+                                                    })()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Medical Information Section */}
+                                <div>
+                                    <h4 className="mb-4 flex items-center text-sm font-semibold text-gray-700">
+                                        <User className="mr-2 h-4 w-4" />
+                                        Medical Information
+                                    </h4>
+                                    <div className="space-y-6">
+                                        <div>
+                                            <FormTextarea
+                                                label="Reason for Visit *"
+                                                value={editFormData.reason}
+                                                onChange={(e) => setEditFormData({ ...editFormData, reason: e.target.value })}
+                                                rows={3}
+                                                placeholder="Brief description of the appointment purpose..."
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                            <div>
+                                                <FormTextarea
+                                                    label="Current Symptoms"
+                                                    value={editFormData.currentSymptoms}
+                                                    onChange={(e) => setEditFormData({ ...editFormData, currentSymptoms: e.target.value })}
+                                                    rows={4}
+                                                    placeholder="Describe current symptoms..."
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <FormTextarea
+                                                    label="Current Medications"
+                                                    value={editFormData.currentMedications}
+                                                    onChange={(e) => setEditFormData({ ...editFormData, currentMedications: e.target.value })}
+                                                    rows={4}
+                                                    placeholder="List current medications, dosages, and frequency..."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                            <div>
+                                                <FormTextarea
+                                                    label="Allergies"
+                                                    value={editFormData.allergies}
+                                                    onChange={(e) => setEditFormData({ ...editFormData, allergies: e.target.value })}
+                                                    rows={3}
+                                                    placeholder="List any known allergies..."
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <FormTextarea
+                                                    label="Additional Notes"
+                                                    value={editFormData.admin_notes}
+                                                    onChange={(e) => setEditFormData({ ...editFormData, admin_notes: e.target.value })}
+                                                    rows={3}
+                                                    placeholder="Additional notes or special instructions..."
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer - Fixed */}
+                        <div className="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
+                            <button
+                                type="button"
+                                onClick={cancelEdit}
+                                className="rounded-lg border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleSaveEdit}
+                                className="rounded-lg bg-teal-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700 focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:outline-none"
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AdminLayout>
     );
 }

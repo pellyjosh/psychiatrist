@@ -1,5 +1,6 @@
 import { SharedHeader } from '@/components/shared-header';
 import { type SharedData } from '@/types';
+import { CONTACT_PHONE_FORMATTED, getYearsOfExperienceFormatted } from '@/utils/license-utils';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Brain, Calendar, Clock, Heart, Mail, MapPin, Phone, Shield, Users } from 'lucide-react';
 import { useEffect } from 'react';
@@ -51,7 +52,7 @@ export default function PsychiatryWelcome() {
                 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
                 <meta
                     name="description"
-                    content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available nationwide."
+                    content={`Dr. Lola Akinola, DNP, PMHNP-BC - ${getYearsOfExperienceFormatted()} experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available nationwide.`}
                 />
                 <meta
                     name="keywords"
@@ -61,7 +62,7 @@ export default function PsychiatryWelcome() {
                 <meta property="og:title" content="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner" />
                 <meta
                     property="og:description"
-                    content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available."
+                    content={`${getYearsOfExperienceFormatted()} experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available.`}
                 />
                 <meta property="og:image" content="/logo.png" />
                 <meta property="og:type" content="website" />
@@ -69,13 +70,30 @@ export default function PsychiatryWelcome() {
                 <meta name="twitter:title" content="Dr. Lola Akinola - Psychiatric Mental Health Nurse Practitioner" />
                 <meta
                     name="twitter:description"
-                    content="16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management."
+                    content={`${getYearsOfExperienceFormatted()} experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.`}
                 />
                 <meta name="twitter:image" content="/logo.png" />
                 <style>
                     {`
                         html {
                             scroll-behavior: smooth;
+                        }
+                        
+                        @keyframes slide {
+                            0% {
+                                transform: translateX(0);
+                            }
+                            100% {
+                                transform: translateX(-100%);
+                            }
+                        }
+                        
+                        .animate-slide {
+                            animation: slide 20s linear infinite;
+                        }
+                        
+                        .animate-slide:hover {
+                            animation-play-state: paused;
                         }
                     `}
                 </style>
@@ -129,8 +147,8 @@ export default function PsychiatryWelcome() {
                                     Dr. Lola Akinola, DNP, PMHNP-BC
                                 </h2>
                                 <p className="animate-fade-in-up mb-8 text-xl text-emerald-100" style={{ animationDelay: '0.2s' }}>
-                                    With over 16 years of experience in mental health, I provide personalized psychiatric care through evidence-based
-                                    treatments. I understand seeking help can feel daunting, and I'm here to support you every step of the way.
+                                    Your mental health journey begins with understanding, compassion, and personalized care. Let's work together
+                                    toward your wellness goals.
                                 </p>
                                 <div className="animate-fade-in-up flex flex-col gap-4 sm:flex-row" style={{ animationDelay: '0.4s' }}>
                                     <Link
@@ -141,11 +159,11 @@ export default function PsychiatryWelcome() {
                                         Book Consultation
                                     </Link>
                                     <a
-                                        href="tel:347-472-1758"
+                                        href={`tel:${CONTACT_PHONE_FORMATTED.replace(/[^0-9]/g, '')}`}
                                         className="group inline-flex items-center justify-center rounded-lg border border-white px-6 py-3 font-medium text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-emerald-700"
                                     >
                                         <Phone className="mr-2 h-5 w-5" />
-                                        Call (347) 472-1758
+                                        Call {CONTACT_PHONE_FORMATTED}
                                     </a>
                                 </div>
                             </div>
@@ -153,7 +171,10 @@ export default function PsychiatryWelcome() {
                                 <div className="rounded-2xl bg-white/10 p-8 ring-1 ring-white/15 backdrop-blur-md transition-all duration-500 hover:scale-105 hover:bg-white/15">
                                     <div className="text-center">
                                         <Heart className="animate-pulse-gentle mx-auto mb-4 h-16 w-16 text-emerald-100 drop-shadow" />
-                                        <h3 className="mb-2 text-xl font-semibold">16+ Years Experience</h3>
+                                        <h3 className="mb-2 text-xl font-semibold">
+                                            {getYearsOfExperienceFormatted().charAt(0).toUpperCase() + getYearsOfExperienceFormatted().slice(1)}{' '}
+                                            Experience
+                                        </h3>
                                         <p className="text-emerald-100">
                                             Helping individuals navigate life's challenges with empathy, respect, and collaboration
                                         </p>
@@ -187,7 +208,6 @@ export default function PsychiatryWelcome() {
                                         'Comprehensive 90-minute assessment to understand your unique situation and develop a personalized treatment plan.',
                                     icon: Users,
                                     duration: '90 minutes',
-                                    price: '$275',
                                 },
                                 {
                                     title: 'Medication Management',
@@ -195,7 +215,6 @@ export default function PsychiatryWelcome() {
                                         'Expert psychiatric medication evaluation, monitoring, and adjustment to optimize your treatment outcomes.',
                                     icon: Heart,
                                     duration: '30-45 minutes',
-                                    price: '$175',
                                 },
                                 {
                                     title: 'ADHD Treatment',
@@ -203,28 +222,24 @@ export default function PsychiatryWelcome() {
                                         'Specialized care for Attention Deficit Hyperactivity Disorder with evidence-based treatment approaches.',
                                     icon: Brain,
                                     duration: '45 minutes',
-                                    price: '$175',
                                 },
                                 {
                                     title: 'Anxiety & Depression Care',
                                     description: 'Compassionate treatment for mood disorders using culturally sensitive, person-centered approaches.',
                                     icon: Heart,
                                     duration: '45 minutes',
-                                    price: '$175',
                                 },
                                 {
                                     title: 'Trauma & PTSD Support',
                                     description: 'Specialized trauma-informed care for Post-Traumatic Stress Disorder and related conditions.',
                                     icon: Shield,
                                     duration: '45 minutes',
-                                    price: '$175',
                                 },
                                 {
                                     title: 'Perinatal Mental Health',
                                     description: 'Specialized care for pregnancy, prenatal, and postpartum mental health concerns.',
                                     icon: Heart,
                                     duration: '45 minutes',
-                                    price: '$175',
                                 },
                             ].map((service, index) => (
                                 <div
@@ -237,12 +252,11 @@ export default function PsychiatryWelcome() {
                                         {service.title}
                                     </h3>
                                     <p className="mb-4 text-slate-600">{service.description}</p>
-                                    <div className="flex items-center justify-between text-sm">
+                                    <div className="flex items-center text-sm">
                                         <div className="flex items-center text-slate-500 transition-colors group-hover:text-emerald-600">
                                             <Clock className="mr-1 h-4 w-4" />
                                             {service.duration}
                                         </div>
-                                        <div className="font-semibold text-emerald-600">{service.price}</div>
                                     </div>
                                 </div>
                             ))}
@@ -250,93 +264,139 @@ export default function PsychiatryWelcome() {
                     </div>
                 </section>
 
-                <section id="providers" className="bg-slate-50 py-20">
+                <section id="providers" className="bg-slate-50 py-12">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="mb-16 text-center">
-                            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">About Dr. Akinola</h2>
+                        <div className="mb-12 text-center">
+                            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">About Dr. Lola</h2>
                             <p className="mx-auto max-w-3xl text-xl text-slate-600">
-                                Experienced Psychiatric Mental Health Nurse Practitioner committed to your wellness journey
+                                Get to know your dedicated mental health provider - experience, education, and commitment to your wellness
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-                            <div className="rounded-xl bg-white p-8 shadow-sm">
-                                <div className="flex items-start space-x-4">
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-2xl font-bold text-white">
-                                        LA
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="mb-1 text-xl font-semibold text-slate-800">Dr. Lola Akinola</h3>
-                                        <p className="mb-2 font-medium text-emerald-600">Psychiatric Mental Health Nurse Practitioner</p>
-                                        <p className="mb-3 text-sm text-slate-600">DNP, PMHNP-BC, ARNP</p>
-                                        <div className="mb-4 flex items-center text-sm text-slate-500">
-                                            <span>16+ years experience • Licensed in New York</span>
+                        {/* Single Card Layout - Image on Left, Content on Right */}
+                        <div className="mx-auto max-w-6xl">
+                            <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
+                                <div className="grid grid-cols-1 lg:grid-cols-5">
+                                    {/* Left Side - Professional Photo with Text Overlay */}
+                                    <div className="relative lg:col-span-2">
+                                        <div className="h-full min-h-[400px]">
+                                            <img
+                                                src="/img/about/lola.jpg"
+                                                alt="Dr. Lola Akinola, DNP, PMHNP-BC"
+                                                className="h-full w-full object-cover"
+                                                onError={(e) => {
+                                                    const target = e.currentTarget;
+                                                    target.style.display = 'none';
+                                                    const fallback = target.nextElementSibling;
+                                                    if (fallback) fallback.classList.remove('hidden');
+                                                }}
+                                            />
+                                            <div className="flex hidden h-full w-full items-center justify-center bg-gradient-to-br from-emerald-400 to-emerald-600 text-6xl font-bold text-white">
+                                                LA
+                                            </div>
+                                        </div>
+
+                                        {/* Text Overlay at Bottom Left */}
+                                        <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
+                                            <h3 className="mb-1 text-xl font-bold text-white">Dr. Lola Akinola</h3>
+                                            <p className="mb-1 text-sm font-medium text-gray-200">Psychiatric Mental Health Nurse Practitioner</p>
+                                            <p className="mb-2 text-xs text-gray-300">DNP, PMHNP-BC, ARNP</p>
+                                            <div className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                                                {getYearsOfExperienceFormatted()} experience • Licensed in New York
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <p className="mb-4 text-slate-600">
-                                    I'm a Psychiatric Nurse Practitioner with over 16 years of experience in the mental health field. Throughout my
-                                    career, I've had the privilege of working with individuals from diverse backgrounds, helping them navigate some of
-                                    the most challenging times in their lives.
-                                </p>
+                                    {/* Right Side - Content */}
+                                    <div className="p-6 lg:col-span-3 lg:p-8">
+                                        <div className="h-full">
+                                            <p className="mb-3 text-sm leading-relaxed text-slate-600">
+                                                With over {getYearsOfExperienceFormatted()} of experience in mental health, I provide personalized
+                                                psychiatric care through evidence-based treatments. I understand seeking help can feel daunting, and
+                                                I'm here to support you every step of the way.
+                                            </p>
 
-                                <div>
-                                    <h4 className="mb-2 font-medium text-slate-800">Areas of Expertise:</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {[
-                                            'ADHD',
-                                            'Anxiety',
-                                            'Depression',
-                                            'Bipolar Disorder',
-                                            'PTSD',
-                                            'Trauma',
-                                            'Medication Management',
-                                            'Mood Disorders',
-                                        ].map((specialty, idx) => (
-                                            <span key={idx} className="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800">
-                                                {specialty}
-                                            </span>
-                                        ))}
+                                            <p className="mb-4 text-sm leading-relaxed text-slate-600">
+                                                I'm a Psychiatric Nurse Practitioner who has had the privilege of working with individuals from
+                                                diverse backgrounds, helping them navigate some of the most challenging times in their lives.
+                                            </p>
+
+                                            {/* Areas of Expertise */}
+                                            <div className="mb-4">
+                                                <h4 className="mb-3 text-base font-semibold text-slate-800">Areas of Expertise</h4>
+                                                <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
+                                                    {[
+                                                        'Solution Focused Therapy (SFT)',
+                                                        'Mindfulness Based Therapies',
+                                                        'Supportive Therapy',
+                                                        'Generalized Anxiety',
+                                                        'Panic',
+                                                        'Phobias',
+                                                        'Depression',
+                                                        'Perinatal Mood and Anxiety Disorders',
+                                                        'PTSD',
+                                                        'ADHD',
+                                                        'OCD',
+                                                        'Substance & Alcohol Abuse',
+                                                        'Abuse (sexual, emotional, physical)',
+                                                        'Relationship Issues',
+                                                        'Eating Disorders',
+                                                        'Autism Spectrum Disorders',
+                                                        'Bipolar Spectrum Disorders',
+                                                        'Personality Disorders',
+                                                        'Grief',
+                                                        'Trauma',
+                                                    ].map((specialty, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="rounded-md border border-emerald-100 bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700"
+                                                        >
+                                                            {specialty}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Education & Quote Row */}
+                                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                                                {/* Education & Credentials */}
+                                                <div>
+                                                    <h4 className="mb-2 text-base font-semibold text-slate-800">Education & Credentials</h4>
+                                                    <div className="space-y-1">
+                                                        <div className="flex items-center">
+                                                            <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                                                            <div className="text-xs">
+                                                                <span className="font-medium text-slate-800">DNP</span>
+                                                                <span className="text-slate-600"> - Chamberlain University</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                                                            <div className="text-xs">
+                                                                <span className="font-medium text-slate-800">PMHNP</span>
+                                                                <span className="text-slate-600"> - Stony Brook University</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                                                            <div className="text-xs">
+                                                                <span className="font-medium text-slate-800">BSN</span>
+                                                                <span className="text-slate-600"> - Adelphi University</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Quote */}
+                                                <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-50 p-3">
+                                                    <p className="text-xs font-medium text-emerald-800 italic">
+                                                        "You can expect a warm, welcoming, and confidential atmosphere where you will feel comfortable
+                                                        sharing at your own pace."
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div className="rounded-xl bg-white p-8 shadow-sm">
-                                <h3 className="mb-4 text-xl font-semibold text-slate-800">Education & Credentials</h3>
-                                <div className="space-y-4">
-                                    <div>
-                                        <p className="font-medium text-slate-800">Doctor of Nursing Practice (DNP)</p>
-                                        <p className="text-sm text-slate-600">Chamberlain University</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-slate-800">Psychiatric Mental Health Nurse Practitioner</p>
-                                        <p className="text-sm text-slate-600">Stony Brook University</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-slate-800">Bachelor of Nursing</p>
-                                        <p className="text-sm text-slate-600">Adelphi University</p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-6">
-                                    <h4 className="mb-2 font-medium text-slate-800">Treatment Approach:</h4>
-                                    <ul className="space-y-1 text-sm text-slate-600">
-                                        <li>• Culturally Sensitive Care</li>
-                                        <li>• Person-Centered Treatment</li>
-                                        <li>• Evidence-Based Practice</li>
-                                        <li>• Interpersonal Therapy</li>
-                                        <li>• Motivational Interviewing</li>
-                                    </ul>
-                                </div>
-
-                                <div className="mt-6 rounded-lg bg-emerald-50 p-4">
-                                    <p className="text-sm text-emerald-800">
-                                        <strong>
-                                            "You can expect a warm, welcoming, and confidential atmosphere where you will feel comfortable sharing at
-                                            your own pace."
-                                        </strong>
-                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -410,11 +470,131 @@ export default function PsychiatryWelcome() {
                     </div>
                 </section>
 
+                {/* Insurance Section */}
+                <section id="insurance" className="bg-white py-20">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="mb-16 text-center">
+                            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">Insurance We Accept</h2>
+                            <p className="mx-auto max-w-3xl text-xl text-slate-600">
+                                We accept most major insurance providers. If you have specific questions regarding your coverage, please contact us
+                                for additional information.
+                            </p>
+                        </div>
+
+                        {/* Insurance Logos Carousel */}
+                        <div className="relative overflow-hidden">
+                            <div className="animate-slide flex space-x-8 lg:space-x-12">
+                                {/* First set of logos */}
+                                <div className="flex flex-shrink-0 items-center justify-center space-x-8 lg:space-x-12">
+                                    <img
+                                        src="/img/insurance/aetna.webp"
+                                        alt="Aetna"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/bluecross_blueshield.webp"
+                                        alt="BlueCross BlueShield"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/tricare.webp"
+                                        alt="TRICARE"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/medicare.webp"
+                                        alt="Medicare"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/oxford_health_plan.webp"
+                                        alt="Oxford Health Plans"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                </div>
+
+                                {/* Second set of logos */}
+                                <div className="flex flex-shrink-0 items-center justify-center space-x-8 lg:space-x-12">
+                                    <img
+                                        src="/img/insurance/optum.webp"
+                                        alt="Optum"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/carefirst.webp"
+                                        alt="CareFirst"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/anthem.webp"
+                                        alt="Anthem"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/unitedhealthcare.webp"
+                                        alt="UnitedHealthcare"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/humana.webp"
+                                        alt="Humana"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                </div>
+
+                                {/* Third set of logos */}
+                                <div className="flex flex-shrink-0 items-center justify-center space-x-8 lg:space-x-12">
+                                    <img
+                                        src="/img/insurance/cigna.webp"
+                                        alt="Cigna"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/medicare_gov.webp"
+                                        alt="Medicare.gov"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/oscar.webp"
+                                        alt="Oscar"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/aetna.webp"
+                                        alt="Aetna"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                    <img
+                                        src="/img/insurance/bluecross_blueshield.webp"
+                                        alt="BlueCross BlueShield"
+                                        className="h-16 w-auto object-contain transition-transform hover:scale-105"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-12 text-center">
+                            <p className="text-lg text-slate-600">
+                                Don't see your insurance provider? Contact us to verify coverage and discuss payment options.
+                            </p>
+                            <div className="mt-6">
+                                <a
+                                    href={`tel:${CONTACT_PHONE_FORMATTED.replace(/[^0-9]/g, '')}`}
+                                    className="inline-flex items-center rounded-lg bg-emerald-600 px-6 py-3 font-medium text-white transition-colors hover:bg-emerald-700"
+                                >
+                                    <Phone className="mr-2 h-5 w-5" />
+                                    Call to Verify Coverage
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Contact Section */}
                 <section id="contact" className="bg-slate-50 py-20">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="mb-16 text-center">
-                            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">Contact Dr. Akinola</h2>
+                            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">Contact Dr. Lola</h2>
                             <p className="mx-auto max-w-3xl text-xl text-slate-600">
                                 Ready to take the first step? I'm here to help and answer any questions you may have.
                             </p>
@@ -429,8 +609,11 @@ export default function PsychiatryWelcome() {
                                         <Phone className="h-6 w-6 text-emerald-600" />
                                         <div>
                                             <p className="font-medium text-slate-800">Phone</p>
-                                            <a href="tel:347-472-1758" className="text-slate-600 transition-colors hover:text-emerald-600">
-                                                (347) 472-1758
+                                            <a
+                                                href={`tel:${CONTACT_PHONE_FORMATTED.replace(/[^0-9]/g, '')}`}
+                                                className="text-slate-600 transition-colors hover:text-emerald-600"
+                                            >
+                                                {CONTACT_PHONE_FORMATTED}
                                             </a>
                                         </div>
                                     </div>
@@ -480,7 +663,7 @@ export default function PsychiatryWelcome() {
                                     </Link>
                                     <div className="flex items-center space-x-4">
                                         <a
-                                            href="tel:347-472-1758"
+                                            href={`tel:${CONTACT_PHONE_FORMATTED.replace(/[^0-9]/g, '')}`}
                                             className="inline-flex items-center rounded-lg border border-emerald-600 px-6 py-3 font-medium text-emerald-600 transition-colors hover:bg-emerald-50"
                                         >
                                             <Phone className="mr-2 h-5 w-5" />
@@ -544,10 +727,11 @@ export default function PsychiatryWelcome() {
                                     <span className="text-xl font-semibold">Dr. Lola Akinola</span>
                                 </div>
                                 <p className="mb-4 text-emerald-100">
-                                    Providing compassionate, culturally sensitive psychiatric mental health care with over 16 years of experience.
-                                    Licensed Psychiatric Mental Health Nurse Practitioner in New York.
+                                    Providing compassionate, culturally sensitive psychiatric mental health care with over{' '}
+                                    {getYearsOfExperienceFormatted()} of experience. Licensed Psychiatric Mental Health Nurse Practitioner in New
+                                    York.
                                 </p>
-                                <p className="text-sm text-emerald-200">Licensed in New York (#403160). Telehealth services available.</p>
+                                <p className="text-sm text-emerald-200">Licensed in New York. Telehealth services available.</p>
                             </div>
 
                             <div>
@@ -584,8 +768,11 @@ export default function PsychiatryWelcome() {
                                 <p className="mt-2 text-sm text-emerald-100">
                                     For non-emergency support:
                                     <br />
-                                    <a href="tel:347-472-1758" className="font-medium text-emerald-400 hover:text-emerald-300">
-                                        (347) 472-1758
+                                    <a
+                                        href={`tel:${CONTACT_PHONE_FORMATTED.replace(/[^0-9]/g, '')}`}
+                                        className="font-medium text-emerald-400 hover:text-emerald-300"
+                                    >
+                                        {CONTACT_PHONE_FORMATTED}
                                     </a>
                                 </p>
                             </div>

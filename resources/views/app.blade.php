@@ -36,7 +36,7 @@
     <!-- Primary Meta Tags -->
     <meta name="title" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
     <meta name="description"
-        content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available.">
+        content="Dr. Lola Akinola, DNP, PMHNP-BC - {{ getYearsOfExperienceFormatted() }} experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management. Telehealth available.">
     <meta name="keywords"
         content="psychiatrist, mental health, ADHD, anxiety, depression, PTSD, telehealth, psychiatric nurse practitioner, Dr. Akinola">
     <meta name="author" content="Dr. Omolola Akinola">
@@ -46,7 +46,7 @@
     <meta property="og:url" content="{{ config('app.url') }}">
     <meta property="og:title" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
     <meta property="og:description"
-        content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.">
+        content="Dr. Lola Akinola, DNP, PMHNP-BC - {{ getYearsOfExperienceFormatted() }} experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.">
     <meta property="og:image" content="{{ asset('logo.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -57,7 +57,7 @@
     <meta property="twitter:url" content="{{ config('app.url') }}">
     <meta property="twitter:title" content="{{ config('app.name', 'Omolola Akinola Psychiatry PLLC') }}">
     <meta property="twitter:description"
-        content="Dr. Lola Akinola, DNP, PMHNP-BC - 16+ years experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.">
+        content="Dr. Lola Akinola, DNP, PMHNP-BC - {{ getYearsOfExperienceFormatted() }} experience in psychiatric mental health care. Specializing in ADHD, anxiety, depression, PTSD, and medication management.">
     <meta property="twitter:image" content="{{ asset('logo.png') }}">
 
     <!-- Additional Meta Tags -->

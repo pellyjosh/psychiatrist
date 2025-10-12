@@ -1,6 +1,6 @@
 import AdminLayout from '@/layouts/admin-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { BookOpen, Edit, ExternalLink, Eye, FileText, Filter, Phone, Plus, Search, User } from 'lucide-react';
+import { BookOpen, Edit, ExternalLink, Eye, FileText, Filter, Phone, Plus, Search, Trash2, User } from 'lucide-react';
 import { useState } from 'react';
 
 interface Creator {
@@ -306,7 +306,7 @@ export default function AdminResourcesIndex({ resources, filters, stats, categor
                                         <th className="px-6 py-3 text-center font-semibold text-slate-900">Status</th>
                                         <th className="px-6 py-3 text-center font-semibold text-slate-900">Views</th>
                                         <th className="px-6 py-3 text-left font-semibold text-slate-900">Created</th>
-                                        <th className="px-6 py-3 text-right font-semibold text-slate-900">Actions</th>
+                                        <th className="px-6 py-3 text-center font-semibold text-slate-900">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-200">
@@ -350,25 +350,28 @@ export default function AdminResourcesIndex({ resources, filters, stats, categor
                                             <td className="px-6 py-4">
                                                 <div className="text-sm text-slate-600">{new Date(resource.created_at).toLocaleDateString()}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-end gap-2">
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="flex items-center justify-center gap-1">
                                                     <Link
                                                         href={`/admin/resources/${resource.id}`}
-                                                        className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-800"
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-colors hover:bg-blue-100 hover:text-blue-700"
+                                                        title="View resource"
                                                     >
-                                                        View
+                                                        <Eye size={16} />
                                                     </Link>
                                                     <Link
                                                         href={`/admin/resources/${resource.id}/edit`}
-                                                        className="text-custom-green hover:text-custom-green-dark text-sm font-medium transition-colors"
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-50 text-amber-600 transition-colors hover:bg-amber-100 hover:text-amber-700"
+                                                        title="Edit resource"
                                                     >
-                                                        Edit
+                                                        <Edit size={16} />
                                                     </Link>
                                                     <button
                                                         onClick={() => handleDelete(resource.id)}
-                                                        className="text-sm font-medium text-red-600 transition-colors hover:text-red-800"
+                                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-600 transition-colors hover:bg-red-100 hover:text-red-700"
+                                                        title="Delete resource"
                                                     >
-                                                        Delete
+                                                        <Trash2 size={16} />
                                                     </button>
                                                 </div>
                                             </td>
