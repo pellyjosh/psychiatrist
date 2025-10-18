@@ -679,16 +679,15 @@ export default function PsychiatryWelcome() {
                                     <div>
                                         <h4 className="mb-2 font-medium text-slate-800">Initial Consultation - $275</h4>
                                         <p className="text-sm text-slate-600">
-                                            Comprehensive 90-minute evaluation to understand your unique situation and develop a personalized
-                                            treatment plan tailored to your needs.
+                                            Comprehensive evaluation to understand your unique situation and develop a personalized treatment plan
+                                            tailored to your needs.
                                         </p>
                                     </div>
 
                                     <div>
                                         <h4 className="mb-2 font-medium text-slate-800">Follow-up Sessions - $175</h4>
                                         <p className="text-sm text-slate-600">
-                                            Regular 30-45 minute sessions for medication management, progress monitoring, and treatment plan
-                                            adjustments.
+                                            Regular sessions for medication management, progress monitoring, and treatment plan adjustments.
                                         </p>
                                     </div>
 
