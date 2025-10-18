@@ -252,12 +252,7 @@ export default function PsychiatryWelcome() {
                                         {service.title}
                                     </h3>
                                     <p className="mb-4 text-slate-600">{service.description}</p>
-                                    <div className="flex items-center text-sm">
-                                        <div className="flex items-center text-slate-500 transition-colors group-hover:text-emerald-600">
-                                            <Clock className="mr-1 h-4 w-4" />
-                                            {service.duration}
-                                        </div>
-                                    </div>
+                                    {/* duration removed per request (Clock icon + timestamp) */}
                                 </div>
                             ))}
                         </div>
@@ -496,16 +491,16 @@ export default function PsychiatryWelcome() {
                                         alt="BlueCross BlueShield"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
                                     />
-                                    <img
+                                    {/* <img
                                         src="/img/insurance/tricare.webp"
                                         alt="TRICARE"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
-                                    />
-                                    <img
+                                    /> */}
+                                    {/* <img
                                         src="/img/insurance/medicare.webp"
                                         alt="Medicare"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
-                                    />
+                                    /> */}
                                     <img
                                         src="/img/insurance/oxford_health_plan.webp"
                                         alt="Oxford Health Plans"
@@ -693,6 +688,10 @@ export default function PsychiatryWelcome() {
                                         </p>
                                     </div>
 
+                                    <p className="mt-2 text-xs text-slate-500 italic">
+                                        Note: Listed prices are for self-pay clients and may differ for insurance-covered services.
+                                    </p>
+
                                     <div className="rounded-lg bg-emerald-50 p-4">
                                         <h4 className="mb-2 font-medium text-emerald-800">Accepted Insurance Plans:</h4>
                                         <div className="grid grid-cols-2 gap-2 text-xs text-emerald-700">
@@ -734,39 +733,15 @@ export default function PsychiatryWelcome() {
                                 <p className="text-sm text-emerald-200">Licensed in New York. Telehealth services available.</p>
                             </div>
 
-                            <div>
-                                <h4 className="mb-4 font-semibold">Services</h4>
-                                <ul className="space-y-2 text-emerald-100">
-                                    <li>
-                                        <a href="#services" className="transition-colors hover:text-emerald-400">
-                                            Initial Evaluation
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#services" className="transition-colors hover:text-emerald-400">
-                                            Medication Management
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#services" className="transition-colors hover:text-emerald-400">
-                                            ADHD Treatment
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#contact" className="transition-colors hover:text-emerald-400">
-                                            Telehealth
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            {/* Services column intentionally removed from footer per request */}
 
                             <div>
                                 <h4 className="mb-4 font-semibold">Emergency Resources</h4>
                                 <p className="mb-2 text-sm text-emerald-100">If you are experiencing a mental health emergency:</p>
                                 <p className="font-medium text-emerald-400">911</p>
                                 <p className="font-medium text-emerald-400">
-                                    ** Additional crisis support within the US: call National Suicide Prevention Lifeline (1-800-273-8255); text Home
-                                    to 741741; go to the closest emergency room; or call 911.
+                                    Additional crisis support within the US: call National Suicide Prevention Lifeline (1-800-273-8255); text Home to
+                                    741741; go to the closest emergency room; or call 911.
                                 </p>
                                 <p className="mt-2 text-sm text-emerald-100">
                                     For non-emergency support:

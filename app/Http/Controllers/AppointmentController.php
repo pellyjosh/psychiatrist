@@ -236,8 +236,21 @@ class AppointmentController extends Controller
         ];
 
         $appointment = Appointment::create($appointmentData);
-        
+
         Log::info('Created appointment:', ['id' => $appointment->id, 'user_id' => $user->id]);
+
+        // Notify admins and the user
+        try {
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\AppointmentCreated($appointment));
+            }
+
+            // Notify the user who requested
+            $user->notify(new \App\Notifications\AppointmentCreated($appointment));
+        } catch (\Exception $e) {
+            Log::error('Notification error on appointment created: ' . $e->getMessage());
+        }
 
         // Don't auto-login the user, just return success response
         return back()->with('success', 'Your appointment request has been submitted successfully! We will contact you within 24 hours to confirm your appointment.');

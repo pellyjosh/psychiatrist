@@ -163,6 +163,14 @@ class AppointmentController extends Controller
             meta: ['service' => $validated['service']]
         );
 
+        // Notify the appointment owner
+        try {
+            $appointment->user->notify(new \App\Notifications\AppointmentCreated($appointment));
+        } catch (\Exception $e) {
+            // swallow notification errors but log them
+            \Illuminate\Support\Facades\Log::error('Failed to notify user on admin-created appointment: ' . $e->getMessage());
+        }
+
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Appointment created successfully.');
     }
@@ -305,6 +313,13 @@ class AppointmentController extends Controller
             fromStatus: $oldStatus,
             toStatus: 'confirmed'
         );
+
+        // Notify user of status change
+        try {
+            $appointment->user->notify(new \App\Notifications\AppointmentStatusChanged($appointment, $oldStatus, 'confirmed'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to notify user on appointment approve: ' . $e->getMessage());
+        }
         
         return redirect()->back()->with('success', 'Appointment approved successfully.');
     }
@@ -323,6 +338,13 @@ class AppointmentController extends Controller
             fromStatus: $oldStatus,
             toStatus: 'cancelled'
         );
+
+        // Notify user of status change
+        try {
+            $appointment->user->notify(new \App\Notifications\AppointmentStatusChanged($appointment, $oldStatus, 'cancelled'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to notify user on appointment decline: ' . $e->getMessage());
+        }
         
         return redirect()->back()->with('success', 'Appointment declined successfully.');
     }
