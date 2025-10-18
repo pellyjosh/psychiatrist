@@ -295,7 +295,7 @@ export default function PsychiatryWelcome() {
                                         <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
                                             <h3 className="mb-1 text-xl font-bold text-white">Dr. Lola Akinola</h3>
                                             <p className="mb-1 text-sm font-medium text-gray-200">Psychiatric Mental Health Nurse Practitioner</p>
-                                            <p className="mb-2 text-xs text-gray-300">DNP, PMHNP-BC, ARNP</p>
+                                            <p className="mb-2 text-xs text-gray-300">DNP, PMHNP-BC, APNP</p>
                                             <div className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
                                                 {getYearsOfExperienceFormatted()} experience • Licensed in New York
                                             </div>
@@ -361,21 +361,25 @@ export default function PsychiatryWelcome() {
                                                         <div className="flex items-center">
                                                             <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
                                                             <div className="text-xs">
-                                                                <span className="font-medium text-slate-800">DNP</span>
+                                                                <span className="font-medium text-slate-800">DNP (Doctor of Nursing Practice)</span>
                                                                 <span className="text-slate-600"> - Chamberlain University</span>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center">
                                                             <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
                                                             <div className="text-xs">
-                                                                <span className="font-medium text-slate-800">PMHNP</span>
+                                                                <span className="font-medium text-slate-800">
+                                                                    PMHNP (Psychiatric Mental Health Nurse Practitioner)
+                                                                </span>
                                                                 <span className="text-slate-600"> - Stony Brook University</span>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-center">
                                                             <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
                                                             <div className="text-xs">
-                                                                <span className="font-medium text-slate-800">BSN</span>
+                                                                <span className="font-medium text-slate-800">
+                                                                    BSN (Bachelor of Science in Nursing)
+                                                                </span>
                                                                 <span className="text-slate-600"> - Adelphi University</span>
                                                             </div>
                                                         </div>
