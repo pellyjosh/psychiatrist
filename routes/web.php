@@ -28,6 +28,10 @@ Route::post('/appointments/check-returning-client', [AppointmentController::clas
 Route::get('/resources', [\App\Http\Controllers\User\ResourceController::class, 'index'])->name('public.resources.index');
 Route::get('/resources/{resource}', [\App\Http\Controllers\User\ResourceController::class, 'show'])->name('public.resources.show');
 
+// Reminder API endpoints (no auth, but requires secret key)
+Route::get('/api/reminders/24h', [\App\Http\Controllers\ReminderController::class, 'remind24Hours']);
+Route::get('/api/reminders/30m', [\App\Http\Controllers\ReminderController::class, 'remind30Minutes']);
+
 // Authenticated routes
 Route::middleware(['auth', 'verified'])->group(function () {
     // User dashboard & appointments

@@ -205,7 +205,7 @@ export default function PsychiatryWelcome() {
                                 {
                                     title: 'Initial Psychiatric Evaluation',
                                     description:
-                                        'Comprehensive 90-minute assessment to understand your unique situation and develop a personalized treatment plan.',
+                                        'Comprehensive assessment to understand your unique situation and develop a personalized treatment plan.',
                                     icon: Users,
                                     duration: '90 minutes',
                                 },
@@ -295,7 +295,7 @@ export default function PsychiatryWelcome() {
                                         <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
                                             <h3 className="mb-1 text-xl font-bold text-white">Dr. Lola Akinola</h3>
                                             <p className="mb-1 text-sm font-medium text-gray-200">Psychiatric Mental Health Nurse Practitioner</p>
-                                            <p className="mb-2 text-xs text-gray-300">DNP, PMHNP-BC, APNP</p>
+                                            <p className="mb-2 text-xs text-gray-300">DNP, APRN, PMHNP-BC</p>
                                             <div className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
                                                 {getYearsOfExperienceFormatted()} experience • Licensed in New York
                                             </div>
@@ -534,11 +534,11 @@ export default function PsychiatryWelcome() {
                                         alt="UnitedHealthcare"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
                                     />
-                                    <img
+                                    {/* <img
                                         src="/img/insurance/humana.webp"
                                         alt="Humana"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
-                                    />
+                                    /> */}
                                 </div>
 
                                 {/* Third set of logos */}
@@ -548,11 +548,11 @@ export default function PsychiatryWelcome() {
                                         alt="Cigna"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
                                     />
-                                    <img
+                                    {/* <img
                                         src="/img/insurance/medicare_gov.webp"
                                         alt="Medicare.gov"
                                         className="h-16 w-auto object-contain transition-transform hover:scale-105"
-                                    />
+                                    /> */}
                                     <img
                                         src="/img/insurance/oscar.webp"
                                         alt="Oscar"

@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +122,17 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reminder Secret
+    |--------------------------------------------------------------------------
+    |
+    | This secret is used to authorize reminder endpoint calls from external
+    | sources (e.g., Chrome extensions, cron jobs). Change this in .env.
+    |
+    */
+
+    'cron_key' => env('CRON_KEY'),
 
 ];

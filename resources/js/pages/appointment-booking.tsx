@@ -12,7 +12,6 @@ import {
     CheckCircle2,
     ChevronLeft,
     ChevronRight,
-    Clock,
     FileText,
     Heart,
     RotateCcw,
@@ -129,9 +128,9 @@ interface AppointmentBookingProps {
 export default function AppointmentBooking({ services = [], appointmentTypes = [] }: AppointmentBookingProps) {
     const [currentStep, setCurrentStep] = useState(1);
     const [selectedDate, setSelectedDate] = useState('');
-    const [selectedTime, setSelectedTime] = useState('');
+    const [selectedTime, setSelectedTime] = useState<string>('');
     const [availableDates, setAvailableDates] = useState<string[]>([]);
-    const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+    const [availableTimes, setAvailableTimes] = useState<{ value: string; label: string }[]>([]);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [isReturningClient, setIsReturningClient] = useState(false);
     const [returningClientEmail, setReturningClientEmail] = useState('');
@@ -142,6 +141,7 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
     const [showDraftModal, setShowDraftModal] = useState(false);
     const [savedDraftData, setSavedDraftData] = useState<AppointmentData | null>(null);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
     // Auto-save key for localStorage
     const AUTO_SAVE_KEY = 'appointment-booking-draft';
@@ -248,19 +248,7 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
 
     // All services for admin use (can be expanded when needed)
     const allServices = formattedServices;
-    const insuranceProviders = [
-        'Aetna',
-        'Anthem',
-        'Blue Cross Blue Shield',
-        'Cigna',
-        'Humana',
-        'Kaiser Permanente',
-        'Medicaid',
-        'Medicare',
-        'Tricare',
-        'UnitedHealth',
-        'Other',
-    ];
+    const insuranceProviders = ['Aetna', 'Anthem', 'Blue Cross Blue Shield', 'Cigna', 'Kaiser Permanente', 'Medicare', 'UnitedHealth', 'Other'];
 
     const states = [
         'AL',
@@ -336,8 +324,9 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
 
     const validatePhone = (phone: string): string | null => {
         if (!phone) return 'Phone number is required';
-        const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-        if (!phoneRegex.test(phone)) return 'Please enter a valid phone number';
+        // Accept common phone formats including international (+), parentheses, dashes and spaces
+        const phoneRegex = /^\+?[0-9()\.\-\s]{7,20}$/;
+        if (!phoneRegex.test(phone)) return 'Please enter a valid phone number (e.g. +1 (555) 555-5555)';
         return null;
     };
 
@@ -375,7 +364,7 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                 : ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'gender', 'address', 'city', 'state', 'zipCode'], // Personal Information
         4: data.hasInsurance ? ['insuranceProvider', 'insurancePolicyNumber', 'subscriberName'] : [], // Insurance Details (conditional)
         5: ['reasonForVisit'], // Medical History (at least reason required)
-        6: ['terms', 'hipaaConsent', 'consentToTreatment'], // Legal & Consent
+        6: ['terms', 'hipaaConsent', 'consentToTreatment', 'privacyPolicy'], // Legal & Consent
     };
 
     // Real-time validation
@@ -523,11 +512,34 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
     };
 
     const generateTimeSlots = () => {
-        const times = [];
+        const times: { value: string; label: string }[] = [];
+        const tz = (import.meta.env.VITE_APP_TIMEZONE as string) || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
         for (let hour = 9; hour < 17; hour++) {
             for (let minute = 0; minute < 60; minute += 30) {
-                const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                times.push(time);
+                const value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                // build a Date object in local timezone using selectedDate (fallback to today)
+                const base = selectedDate ? new Date(`${selectedDate}T${value}:00`) : new Date();
+                base.setHours(hour, minute, 0, 0);
+
+                // Format label in 12-hour format using the configured timezone if available
+                let label = value;
+                try {
+                    const fmt = new Intl.DateTimeFormat('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true,
+                        timeZone: tz,
+                    });
+                    label = fmt.format(base);
+                } catch (e) {
+                    // fallback
+                    const hh = ((hour + 11) % 12) + 1;
+                    const ampm = hour >= 12 ? 'PM' : 'AM';
+                    label = `${hh}:${minute.toString().padStart(2, '0')} ${ampm}`;
+                }
+
+                times.push({ value, label });
             }
         }
         setAvailableTimes(times);
@@ -680,7 +692,20 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
         // Submit the form
         post('/appointments', {
             onSuccess: () => {
+                // Clear saved draft and reset UI state
                 clearSavedData();
+                // Reset the form fields to defaults
+                const defaults = getDefaultFormData();
+                Object.keys(defaults).forEach((key) => {
+                    // @ts-ignore
+                    setData(key as keyof AppointmentData, defaults[key as keyof AppointmentData]);
+                });
+                setTouchedFields({});
+                setValidationErrors({});
+                setSelectedDate('');
+                setSelectedTime('');
+                setCurrentStep(1);
+
                 setShowSuccessModal(true);
                 // Auto-dismiss after 10 seconds
                 setTimeout(() => {
@@ -1219,14 +1244,6 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                                     <p className={`mt-1 text-sm ${data.service === service.id ? 'text-green-700' : 'text-gray-600'}`}>
                                                         {service.description}
                                                     </p>
-                                                    <div className="mt-2 flex items-center space-x-4">
-                                                        <span
-                                                            className={`flex items-center text-sm ${data.service === service.id ? 'text-green-700' : 'text-green-600'}`}
-                                                        >
-                                                            <Clock className="mr-1 h-4 w-4" />
-                                                            {service.duration}
-                                                        </span>
-                                                    </div>
                                                 </div>
                                                 <div
                                                     className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
@@ -1266,16 +1283,16 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                             <div className="grid grid-cols-3 gap-3 md:grid-cols-4">
                                                 {availableTimes.map((time) => (
                                                     <FormButton
-                                                        key={time}
+                                                        key={time.value}
                                                         type="button"
-                                                        variant={selectedTime === time ? 'primary' : 'outline'}
+                                                        variant={selectedTime === time.value ? 'primary' : 'outline'}
                                                         size="sm"
                                                         onClick={() => {
-                                                            setSelectedTime(time);
-                                                            setData('preferredTime', time);
+                                                            setSelectedTime(time.value);
+                                                            setData('preferredTime', time.value);
                                                         }}
                                                     >
-                                                        {time}
+                                                        {time.label}
                                                     </FormButton>
                                                 ))}
                                             </div>
@@ -1414,12 +1431,12 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                                 error={getFieldError('emergencyContactName')}
                                             />
                                             <div className="grid gap-4 md:grid-cols-2">
-                                                <FormInput
+                                                <FormPhoneUS
                                                     label="Emergency Contact Phone"
-                                                    type="tel"
                                                     value={data.emergencyContactPhone}
-                                                    onChange={(e) => handleFieldChange('emergencyContactPhone', e.target.value)}
+                                                    onChange={(val) => handleFieldChange('emergencyContactPhone', val)}
                                                     required
+                                                    placeholder="(555) 555-5555"
                                                     error={getFieldError('emergencyContactPhone')}
                                                 />
                                                 <FormInput
@@ -1602,33 +1619,7 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                         error={getFieldError('currentStressors')}
                                     />
 
-                                    <FormRadioGroup
-                                        label="Are you currently having thoughts of hurting yourself or others?"
-                                        name="suicidalThoughts"
-                                        value={data.suicidalThoughts ? 'yes' : 'no'}
-                                        onChange={(value) => handleFieldChange('suicidalThoughts', value === 'yes')}
-                                        direction="horizontal"
-                                        required
-                                        error={getFieldError('suicidalThoughts')}
-                                    >
-                                        <FormRadio
-                                            name="suicidalThoughts"
-                                            value="no"
-                                            checked={!data.suicidalThoughts}
-                                            onChange={() => handleFieldChange('suicidalThoughts', false)}
-                                        >
-                                            No
-                                        </FormRadio>
-                                        <FormRadio
-                                            name="suicidalThoughts"
-                                            value="yes"
-                                            checked={data.suicidalThoughts}
-                                            onChange={() => handleFieldChange('suicidalThoughts', true)}
-                                        >
-                                            Yes
-                                        </FormRadio>
-                                    </FormRadioGroup>
-
+                                    {/* Suicidal/homicidal question removed per request */}
                                     <FormRadioGroup
                                         label="Preferred Communication Method"
                                         name="preferredCommunication"
@@ -1695,7 +1686,10 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                                 error={getFieldError('hipaaConsent')}
                                             >
                                                 I have read and agree to the Privacy Policy and HIPAA Notice of Privacy Practices. I understand my
-                                                rights regarding protected health information.
+                                                rights regarding protected health information.{' '}
+                                                <button type="button" onClick={() => setShowPrivacyModal(true)} className="text-teal-600 underline">
+                                                    Read Privacy Policy
+                                                </button>
                                             </FormCheckbox>
 
                                             <FormCheckbox
@@ -1751,12 +1745,6 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                             <div className="flex justify-between">
                                                 <span className="font-medium text-gray-800">Time:</span>
                                                 <span className="text-gray-900">{data.preferredTime || 'Not selected'}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span className="font-medium text-gray-800">Duration:</span>
-                                                <span className="text-gray-900">
-                                                    {formattedServices.find((s) => s.id === data.service)?.duration || 'Not specified'}
-                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1819,6 +1807,61 @@ export default function AppointmentBooking({ services = [], appointmentTypes = [
                                         I agree to the terms and conditions, privacy policy, and understand that this is a request for appointment and
                                         confirmation will be provided within 24 hours.
                                     </FormCheckbox>
+
+                                    <FormCheckbox
+                                        checked={data.privacyPolicy}
+                                        onChange={(checked) => handleFieldChange('privacyPolicy', checked)}
+                                        required
+                                        error={getFieldError('privacyPolicy')}
+                                    >
+                                        I have read and agree to the Privacy Policy and HIPAA Notice of Privacy Practices. I understand my rights
+                                        regarding protected health information.{' '}
+                                        <button type="button" onClick={() => setShowPrivacyModal(true)} className="text-teal-600 underline">
+                                            Read Privacy Policy
+                                        </button>
+                                    </FormCheckbox>
+
+                                    {/* Privacy Policy Modal */}
+                                    {showPrivacyModal && (
+                                        <div className="fixed inset-0 z-50 flex items-center justify-center">
+                                            <div className="absolute inset-0 bg-black/50" onClick={() => setShowPrivacyModal(false)} />
+                                            <div className="relative mx-4 max-w-3xl transform rounded-lg bg-white p-6 shadow-lg">
+                                                <h3 className="mb-4 text-lg font-bold">Privacy Policy & HIPAA Notice of Privacy Practices</h3>
+                                                <div className="max-h-[60vh] overflow-auto text-sm leading-relaxed text-gray-700">
+                                                    <p>
+                                                        <strong>Privacy Policy</strong>
+                                                    </p>
+                                                    <p>
+                                                        Your privacy is important to us. This practice is committed to protecting the privacy of your
+                                                        health information. We collect, use, and disclose your health information only as permitted by
+                                                        law and as necessary to provide you care.
+                                                    </p>
+
+                                                    <p>
+                                                        <strong>HIPAA Notice</strong>
+                                                    </p>
+                                                    <p>
+                                                        We are required by law to maintain the privacy of your protected health information and to
+                                                        provide you with notice of our legal duties and privacy practices with respect to your health
+                                                        information.
+                                                    </p>
+
+                                                    <p>
+                                                        Please contact our office for the full Privacy Policy and HIPAA Notice. By checking the box
+                                                        you acknowledge that you have read and agree to these policies.
+                                                    </p>
+                                                </div>
+                                                <div className="mt-4 text-right">
+                                                    <button
+                                                        onClick={() => setShowPrivacyModal(false)}
+                                                        className="rounded bg-teal-600 px-4 py-2 text-white"
+                                                    >
+                                                        Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </>
                         )}
